@@ -1,0 +1,32 @@
+<!-- ============================================================ -->
+<!-- ADD TO: android/app/src/main/AndroidManifest.xml             -->
+<!-- Inside the <application> tag, add the following:              -->
+<!-- ============================================================ -->
+
+<!--
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
+    <application
+        android:label="Kigali Directory"
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher">
+
+        ADD THIS LINE:
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="YOUR_GOOGLE_MAPS_API_KEY_HERE"/>
+
+        <activity ...>
+        </activity>
+    </application>
+</manifest>
+-->
+
+<!-- ============================================================ -->
+<!-- Also ensure android/app/build.gradle has:                     -->
+<!-- minSdkVersion 21 (or higher)                                  -->
+<!-- compileSdkVersion 34                                          -->
+<!-- ============================================================ -->
