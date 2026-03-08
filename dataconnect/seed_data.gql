@@ -1,0 +1,58 @@
+mutation CreateSeedData @transaction @auth(level: USER, insecureReason: "This is seed data and should only be run by authenticated users.") {
+  user1: user_insert(data: {
+    id: "550e8400-e29b-41d4-a716-446655440000",
+    displayName: "Alice Smith",
+    email: "alice.smith@example.com",
+    createdAt: "2023-01-01T10:00:00Z",
+    userType: "Resident",
+    phoneNumber: "+250788123456",
+    address: "123 Main St, Kigali"
+  })
+  user2: user_insert(data: {
+    id: "550e8400-e29b-41d4-a716-446655440001",
+    displayName: "Bob Johnson",
+    email: "bob.johnson@example.com",
+    createdAt: "2023-01-02T11:00:00Z",
+    userType: "Admin",
+    phoneNumber: "+250788654321",
+    address: "456 Oak Ave, Kigali"
+  })
+  serviceType1: serviceType_insert(data: {
+    id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+    name: "Pothole Repair",
+    description: "Request for repairing potholes on city roads.",
+    iconUrl: "https://example.com/icons/pothole.png"
+  })
+  serviceType2: serviceType_insert(data: {
+    id: "f1e2d3c4-b5a6-0987-6543-210fedcba987",
+    name: "Streetlight Outage",
+    description: "Report a non-functional streetlight.",
+    iconUrl: "https://example.com/icons/streetlight.png"
+  })
+  announcement1: announcement_insert(data: {
+    id: "11223344-5566-7788-9900-aabbccddeeff",
+    title: "Road Closure on Main Street",
+    content: "Main Street will be closed for repairs on Jan 15th, 2024 from 9 AM to 5 PM.",
+    createdAt: "2024-01-10T08:00:00Z",
+    imageUrl: "https://example.com/announcements/roadclosure.jpg",
+    validUntil: "2024-01-16T00:00:00Z"
+  })
+  serviceRequest1: serviceRequest_insert(data: {
+    id: "98765432-10ab-cdef-0123-456789abcdef",
+    title: "Large Pothole on Market Road",
+    description: "There's a very large pothole near the Market Road roundabout causing traffic issues.",
+    status: "Pending",
+    createdAt: "2024-01-12T14:30:00Z",
+    location: "Market Road Roundabout",
+    imageUrl: "https://example.com/requests/pothole_market.jpg",
+    userId: "550e8400-e29b-41d4-a716-446655440000",
+    serviceTypeId: "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+  })
+  comment1: comment_insert(data: {
+    id: "c0ffeeb2-f220-4a81-9b44-9343753b801b",
+    text: "I hope this gets fixed soon!",
+    createdAt: "2024-01-12T15:00:00Z",
+    userId: "550e8400-e29b-41d4-a716-446655440000",
+    serviceRequestId: "98765432-10ab-cdef-0123-456789abcdef"
+  })
+}

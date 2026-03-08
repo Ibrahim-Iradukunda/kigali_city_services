@@ -1,0 +1,41 @@
+type User @table {
+  displayName: String!
+  email: String!
+  createdAt: Timestamp!
+  userType: String!
+  phoneNumber: String
+  address: String
+}
+
+type ServiceType @table {
+  name: String!
+  description: String!
+  iconUrl: String
+}
+
+type ServiceRequest @table {
+  title: String!
+  description: String!
+  status: String!
+  createdAt: Timestamp!
+  location: String
+  imageUrl: String
+  user: User
+  serviceType: ServiceType
+}
+
+type Comment @table {
+  text: String!
+  createdAt: Timestamp!
+  imageUrl: String
+  user: User
+  serviceRequest: ServiceRequest
+}
+
+type Announcement @table {
+  title: String!
+  content: String!
+  createdAt: Timestamp!
+  imageUrl: String
+  validUntil: Timestamp
+}

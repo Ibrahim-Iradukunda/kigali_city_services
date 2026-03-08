@@ -1,0 +1,70 @@
+query ListAllServiceRequests @auth(level: USER, insecureReason: "This operation is safe to expose to all logged in users.") {
+  serviceRequests(orderBy: [{createdAt: DESC}]) {
+    id
+    title
+    description
+    status
+    createdAt
+    location
+    imageUrl
+    user {
+      id
+      displayName
+      email
+    }
+    serviceType {
+      id
+      name
+    }
+  }
+}
+
+mutation CreateNewServiceRequest($title: String!, $description: String!, $status: String!, $location: String, $imageUrl: String, $serviceTypeId: UUID) @auth(level: USER) {
+  serviceRequest_insert(data: {
+    title: $title,
+    description: $description,
+    status: $status,
+    createdAt_expr: "request.time",
+    location: $location,
+    imageUrl: $imageUrl,
+    userId_expr: "auth.uid",
+    serviceTypeId: $serviceTypeId
+  })
+}
+
+query GetServiceRequestWithComments($id: UUID!) @auth(level: PUBLIC, insecureReason: "This operation is safe to expose to the public as specific request data is only returned with a provided ID, which can be secured on the client if necessary.") {
+  serviceRequest(id: $id) {
+    id
+    title
+    description
+    status
+    createdAt
+    location
+    imageUrl
+    user {
+      id
+      displayName
+    }
+    serviceType {
+      name
+    }
+    comments_on_serviceRequest {
+      id
+      text
+      createdAt
+      user {
+        displayName
+      }
+    }
+  }
+}
+
+mutation AddCommentToServiceRequest($serviceRequestId: UUID!, $text: String!, $imageUrl: String) @auth(level: USER) {
+  comment_insert(data: {
+    serviceRequestId: $serviceRequestId,
+    userId_expr: "auth.uid",
+    text: $text,
+    createdAt_expr: "request.time",
+    imageUrl: $imageUrl
+  })
+}
