@@ -75,7 +75,10 @@ class ListingsProvider extends ChangeNotifier {
             notifyListeners();
           },
           onError: (error) {
-            _error = _formatFirestoreError(error);
+            // If fetching the user's own listings fails (for example due to
+            // missing indexes), don't break the main directory screen.
+            // Instead, surface it as "no user listings yet".
+            _userListings = [];
             notifyListeners();
           },
         );

@@ -32,10 +32,10 @@ class FirestoreService {
       return Stream.value([]);
     }
 
+    // Keep this query index-free by avoiding composite orderBy.
     return _firestore
         .collection(_collection)
         .where('category', isEqualTo: category)
-        .orderBy('timestamp', descending: true)
         .snapshots()
         .map((snapshot) {
           return snapshot.docs
@@ -51,10 +51,12 @@ class FirestoreService {
       return Stream.value([]);
     }
 
+    // Keep this query simple so it never requires a composite index.
+    // We fetch the user's documents and let the UI present an empty state
+    // when they have not created any listings yet.
     return _firestore
         .collection(_collection)
         .where('createdBy', isEqualTo: userId)
-        .orderBy('timestamp', descending: true)
         .snapshots()
         .map((snapshot) {
           return snapshot.docs

@@ -237,19 +237,92 @@ class _DirectoryScreenState extends State<DirectoryScreen> {
                   }
 
                   final listings = provider.filteredListings;
+                  final hasAnyListings = provider.allListings.isNotEmpty;
+                  final hasActiveFilters = provider.searchQuery.isNotEmpty ||
+                      (provider.selectedCategory != null &&
+                          provider.selectedCategory!.isNotEmpty);
 
-                  if (listings.isEmpty) {
+                  // No listings exist in Firestore yet for anyone
+                  if (!hasAnyListings) {
                     return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
+                        children: const [
+                          Icon(
+                            Icons.location_off_outlined,
+                            color: AppTheme.textMuted,
+                            size: 56,
+                          ),
+                          SizedBox(height: 16),
+                          Text(
+                            'No services listed yet',
+                            style: TextStyle(
+                              color: AppTheme.textPrimary,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            'Be the first to add a listing!',
+                            style: TextStyle(
+                              color: AppTheme.textMuted,
+                              fontSize: 13,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  // Listings exist, but current search/category filters return nothing
+                  if (listings.isEmpty && hasActiveFilters) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
                           Icon(
                             Icons.search_off,
                             color: AppTheme.textMuted,
                             size: 56,
                           ),
-                          const SizedBox(height: 16),
-                          const Text(
+                          SizedBox(height: 16),
+                          Text(
+                            'No services match your filters',
+                            style: TextStyle(
+                              color: AppTheme.textPrimary,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            'Try a different search term or category.',
+                            style: TextStyle(
+                              color: AppTheme.textMuted,
+                              fontSize: 13,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  // Fallback: no filters and no listings (should already be covered above)
+                  if (listings.isEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(
+                            Icons.search_off,
+                            color: AppTheme.textMuted,
+                            size: 56,
+                          ),
+                          SizedBox(height: 16),
+                          Text(
                             'No listings found',
                             style: TextStyle(
                               color: AppTheme.textPrimary,
@@ -257,15 +330,14 @@ class _DirectoryScreenState extends State<DirectoryScreen> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8),
                           Text(
-                            provider.searchQuery.isNotEmpty
-                                ? 'Try a different search term'
-                                : 'Be the first to add a listing!',
-                            style: const TextStyle(
+                            'Be the first to add a listing!',
+                            style: TextStyle(
                               color: AppTheme.textMuted,
                               fontSize: 13,
                             ),
+                            textAlign: TextAlign.center,
                           ),
                         ],
                       ),

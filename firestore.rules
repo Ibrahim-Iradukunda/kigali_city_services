@@ -1,9 +1,22 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow all operations for debugging - REMOVE THIS IN PRODUCTION
-    match /{document=**} {
-      allow read, write: if true;
+    // Public read for everyone (directory app)
+    match /services/{serviceId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null;
+    }
+
+    // Reviews (public read, authenticated write)
+    match /services/{serviceId}/reviews/{reviewId} {
+      allow read: if true;
+      allow create: if request.auth != null;
+      allow update, delete: if request.auth != null && request.auth.uid == resource.data.userId;
+    }
+
+    // User-specific bookmarks (private)
+    match /users/{userId}/bookmarks/{bookmarkId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
     }
   }
 }
