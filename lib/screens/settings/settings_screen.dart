@@ -34,6 +34,7 @@ class SettingsScreen extends StatelessWidget {
                 builder: (context, authProvider, _) {
                   final user = authProvider.user;
                   final profile = authProvider.userProfile;
+                  final isVerified = authProvider.isEmailVerified;
 
                   return Container(
                     margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -91,26 +92,41 @@ class SettingsScreen extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
-                              user?.emailVerified == true
-                                  ? Icons.verified
-                                  : Icons.warning_amber_rounded,
-                              color: user?.emailVerified == true
-                                  ? AppTheme.successGreen
-                                  : AppTheme.accentGold,
-                              size: 14,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              user?.emailVerified == true
-                                  ? 'Verified'
-                                  : 'Not verified',
-                              style: TextStyle(
-                                color: user?.emailVerified == true
-                                    ? AppTheme.successGreen
-                                    : AppTheme.accentGold,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: isVerified
+                                    ? AppTheme.successGreen.withOpacity(0.15)
+                                    : AppTheme.accentGold.withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    isVerified
+                                        ? Icons.verified
+                                        : Icons.warning_amber_rounded,
+                                    color: isVerified
+                                        ? AppTheme.successGreen
+                                        : AppTheme.accentGold,
+                                    size: 14,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    isVerified ? 'Verified account' : 'Not verified',
+                                    style: TextStyle(
+                                      color: isVerified
+                                          ? AppTheme.successGreen
+                                          : AppTheme.accentGold,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
