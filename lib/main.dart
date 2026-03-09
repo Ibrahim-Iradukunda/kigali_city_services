@@ -15,8 +15,6 @@ import 'screens/home_screen.dart';
 import 'theme/app_theme.dart';
 
 void main() async {
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
@@ -73,12 +71,21 @@ class AuthWrapper extends StatelessWidget {
           );
         }
 
-        // If user is not signed in, show login screen
+        // If user is not signed in, show login/phone verification
         if (authProvider.user == null) {
+          if (authProvider.isWaitingForPhoneVerification) {
+            return const PhoneVerificationScreen();
+          }
           return const LoginScreen();
         }
 
-        // User is signed in, show home screen
+        // Email/password users must verify email before continuing
+        final email = authProvider.user?.email ?? '';
+        final isEmailUser = email.isNotEmpty && authProvider.user?.phoneNumber == null;
+        if (isEmailUser && !authProvider.isEmailVerified) {
+          return const EmailVerificationScreen();
+        }
+
         return const HomeScreen();
       },
     );

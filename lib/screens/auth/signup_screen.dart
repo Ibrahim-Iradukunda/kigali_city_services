@@ -57,7 +57,8 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
           ),
         );
-        Navigator.pop(context);
+        // Return to the root so AuthWrapper can show verification screen.
+        Navigator.of(context).popUntil((route) => route.isFirst);
       } else if (authProvider.error != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

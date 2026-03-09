@@ -132,6 +132,9 @@ class AuthService {
       // Update display name
       await result.user?.updateDisplayName(displayName);
 
+      // Send email verification
+      await result.user?.sendEmailVerification();
+
       // Create user profile in Firestore
       await _createUserProfile(displayName, email: email);
 
@@ -148,9 +151,13 @@ class AuthService {
 
   // Send email verification
   Future<void> sendEmailVerification() async {
-    User? user = _auth.currentUser;
-    if (user != null && !user.emailVerified) {
-      await user.sendEmailVerification();
+    try {
+      User? user = _auth.currentUser;
+      if (user != null && !user.emailVerified) {
+        await user.sendEmailVerification();
+      }
+    } on FirebaseAuthException catch (e) {
+      throw _handleAuthError(e);
     }
   }
 
