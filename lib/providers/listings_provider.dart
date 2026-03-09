@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart' show FirebaseException;
 import '../models/listing.dart';
 import '../services/firestore_service.dart';
 
@@ -28,9 +29,23 @@ class ListingsProvider extends ChangeNotifier {
   String get searchQuery => _searchQuery;
   String? get selectedCategory => _selectedCategory;
 
+  String _formatFirestoreError(Object error) {
+    if (error is FirebaseException) {
+      if (error.code == 'permission-denied') {
+        return 'Firestore permission denied. Update your Firestore Rules to allow access (or sign in with an allowed account).';
+      }
+      if (error.code == 'failed-precondition') {
+        return 'Firestore query failed. This can happen when an index is required.';
+      }
+      return error.message ?? 'Firestore error: ${error.code}';
+    }
+    return error.toString();
+  }
+
   // Initialize stream for all listings
   void initListingsStream() {
     _isLoading = true;
+    _error = null;
     notifyListeners();
 
     _listingsSubscription?.cancel();
@@ -42,7 +57,7 @@ class ListingsProvider extends ChangeNotifier {
         notifyListeners();
       },
       onError: (error) {
-        _error = 'Failed to load listings. Please check your connection.';
+        _error = _formatFirestoreError(error);
         _isLoading = false;
         notifyListeners();
       },
@@ -60,7 +75,7 @@ class ListingsProvider extends ChangeNotifier {
             notifyListeners();
           },
           onError: (error) {
-            _error = error.toString();
+            _error = _formatFirestoreError(error);
             notifyListeners();
           },
         );
@@ -129,6 +144,11 @@ class ListingsProvider extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
       return true;
+    } on FirebaseException catch (e) {
+      _error = _formatFirestoreError(e);
+      _isLoading = false;
+      notifyListeners();
+      return false;
     } catch (e) {
       _error = e.toString();
       _isLoading = false;
@@ -148,6 +168,11 @@ class ListingsProvider extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
       return true;
+    } on FirebaseException catch (e) {
+      _error = _formatFirestoreError(e);
+      _isLoading = false;
+      notifyListeners();
+      return false;
     } catch (e) {
       _error = e.toString();
       _isLoading = false;
@@ -167,6 +192,11 @@ class ListingsProvider extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
       return true;
+    } on FirebaseException catch (e) {
+      _error = _formatFirestoreError(e);
+      _isLoading = false;
+      notifyListeners();
+      return false;
     } catch (e) {
       _error = e.toString();
       _isLoading = false;
